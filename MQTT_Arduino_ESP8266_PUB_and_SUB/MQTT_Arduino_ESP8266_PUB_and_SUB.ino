@@ -133,8 +133,8 @@ void pushdata(){
   //POST TO MQTT
   //client.publish("fikinabil14/datax", dtostrf(datax, 6, 2, msgBuffer)); //Convert to String 
   client.publish("fikinabil14/datax", String(datax).c_str());
-  client.subscribe("fikinabil14/bacaLDR", String(bacaLDR).c_str());
-  client.subscribe("fikinabil14/bacaFlame", String(bacaFlame).c_str());
+  client.publish("fikinabil14/bacaLDR", String(bacaLDR).c_str());
+  client.publish("fikinabil14/bacaFlame", String(bacaFlame).c_str());
 }
 
 void loop() {
@@ -159,8 +159,8 @@ Serial.println("connected");
 
 //client.publish("outpic","Hello World");
 client.subscribe("fikinabil14/lampu1",0);
-client.publish("fikinabil14/LDR",0);
-client.publish("fikinabil14/Flame",0);
+client.subscribe("fikinabil14/LDR",0);
+client.subscribe("fikinabil14/Flame",0);
 
 } else {
   Serial.print("failed, rc=");
