@@ -54,7 +54,7 @@ lastSend = 0;
 Serial.println("You're connected to the network");
 
 //connect to MQTT server
-client.setServer("broker.hivemq.com", 1883);
+client.setServer("192.168.1.58", 1883);
 client.setCallback(callback);
 }
 
