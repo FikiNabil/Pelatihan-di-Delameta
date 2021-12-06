@@ -3,6 +3,9 @@
 #include <ArduinoJson.h> //6.17.3
 #include <SPI.h>
 #include <MFRC522.h>
+#include <SD.h>
+#define CS 4
+File data;
 
 // replace the MAC address below by the MAC address printed on a sticker on the Arduino Shield 2
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
@@ -23,6 +26,7 @@ MFRC522 mfrc522(SS_PIN, RST_PIN);   // Create MFRC522 instance.
 
 void setup() {
   Serial.begin(115200);
+  
   pinMode (buzzer,OUTPUT);
   while(!Serial);
   SPI.begin();      // Initiate  SPI bus
@@ -114,15 +118,60 @@ void loop() {
          Serial.print("Telepon  = ");Serial.println(telepon_dibaca);
          Serial.print("Waktu    = ");Serial.println(tanggal_dibaca);
          Serial.println();
+         kirimdata();
+         delay(1000);
+         bacadata();
+        
        }else{
         buzzergagal();
         Serial.println("Kartu Tidak terdaftar!");
        }
       } 
     }
-    //delay(1000);
+        
 }
 
+void kirimdata() {
+  //KIRIM DATA KE SD CARD    
+    data = SD.open("datarfid.txt", FILE_WRITE);
+    if (data) {
+        Serial.println("Send data to SD Card!");
+        //POST TO SERIAL
+         data.print("ID       = ");data.print(id_dibaca);
+         data.println();
+         data.print("RFID     = ");data.print(rfid_dibaca);
+         data.println();
+         data.print("Nama     = ");data.print(nama_dibaca);
+         data.println();
+         data.print("Alamat   = ");data.print(alamat_dibaca);
+         data.println();
+         data.print("Telepon  = ");data.print(telepon_dibaca);
+         data.println();
+         data.print("Waktu    = ");data.print(tanggal_dibaca);
+         data.println("-----------------------------------------");
+         data.close();
+         Serial.println("Success");
+       }else{
+        Serial.println("Failed to sending!");
+       }
+  }
+
+void bacadata(){
+    data = SD.open("datarfid.txt");
+    if (data) {
+      Serial.println("datarfid.txt:");
+      // read from the file until there's nothing else in it:
+      while (data.available()) {
+        Serial.write(data.read());
+      }
+      // close the file:
+      data.close();
+    } else {
+      // if the file didn't open, print an error:
+      Serial.println("error opening data.txt");
+    }
+  }
+  
 void buzzeroke(){
   digitalWrite(buzzer,HIGH);
   delay(100);
